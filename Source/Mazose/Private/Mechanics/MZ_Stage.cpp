@@ -31,8 +31,8 @@ void AMZ_Stage::BeginPlay()
 	Super::BeginPlay();
 
 	/* Al empezar el juego seteo el material elegido para el stage en sus correspondientes sitios */
-	StageBase->SetMaterial(0, StageMaterial);
-	StageBorders->SetMaterial(0, StageMaterial);	
+	//StageBase->SetMaterial(0, StageMaterial);
+	//StageBorders->SetMaterial(0, StageMaterial);	
 }
 
 void AMZ_Stage::Tick(float DeltaTime)

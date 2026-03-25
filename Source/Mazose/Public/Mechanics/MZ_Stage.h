@@ -47,7 +47,7 @@ public:
 	float ElapsedTime = 0.0f;
 
 	/* Mesh que compone la base del stage. */
-	UPROPERTY(EditAnywhere, Category = "Stage Structure")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stage Structure")
 	UStaticMeshComponent* StageBase;
 
 	/* Material para la base del stage. */
@@ -55,7 +55,7 @@ public:
 	UMaterial* StageMaterial;
 
 	/* Mesh que compone los bordes del stage. */
-	UPROPERTY(EditAnywhere, Category = "Stage Structure")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stage Structure")
 	UStaticMeshComponent* StageBorders;
 
 	/* Caja de colisión que va a detectar a la bola entrar en su perímetro. */
