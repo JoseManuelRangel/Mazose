@@ -16,7 +16,22 @@ AMZ_PlatformManager::AMZ_PlatformManager()
 void AMZ_PlatformManager::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
+}
 
+void AMZ_PlatformManager::BeginPlay()
+{
+	Super::BeginPlay();
+	
+}
+
+void AMZ_PlatformManager::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+}
+
+void AMZ_PlatformManager::SpherePlatformsDisplay()
+{
 	/* 1. Limpio los componentes antiguos antes de generar nuevos en caso de que haya. */
 	for (UChildActorComponent* Component : PlatformComponents)
 	{
@@ -75,15 +90,5 @@ void AMZ_PlatformManager::OnConstruction(const FTransform& Transform)
 	}
 }
 
-void AMZ_PlatformManager::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
 
-void AMZ_PlatformManager::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
 

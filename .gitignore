@@ -1,6 +1,10 @@
 # Visual Studio 2015 user specific files
 .vs/
 
+# Unreal Assets
+*.uasset
+*.umap
+
 # Compiled Object files
 *.slo
 *.lo
