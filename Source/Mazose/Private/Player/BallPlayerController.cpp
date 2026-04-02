@@ -56,7 +56,7 @@ void ABallPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &ABallPlayerController::SprintMovementInput);
 
 		/* Vinculo la acción de movimiento de dash. */
-		//EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Started, this, &ABallPlayerController::DashMovementInput);
+		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Started, this, &ABallPlayerController::DashMovementInput);
 	}
 }
 
