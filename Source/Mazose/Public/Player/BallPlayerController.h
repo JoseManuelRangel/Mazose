@@ -90,7 +90,7 @@ protected:
 private:
 	/* VARIABLES */
 	/* Velocidad inicial de la Bola. */
-	float InitialSpeed = 800.0f;
+	float InitialSpeed = 1500.0f;
 
 	/* Velocidad de movimiento de la Bola. */
 	float Speed;

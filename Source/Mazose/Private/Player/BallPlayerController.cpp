@@ -192,7 +192,7 @@ void ABallPlayerController::ApplyMovementByType(const FInputActionValue& Value, 
 	if (InputValue == 0.0f)
 	{
 		/* Si no hay input, aumento el damping para frenar en seco. */
-		Player->BodyComponent->SetLinearDamping(LinearDamping * 1.5f);
+		Player->BodyComponent->SetLinearDamping(LinearDamping * 3.0f);
 	}
 	else {
 		/* Si hay input, mantengo el damping original para fluidez. */
