@@ -7,6 +7,9 @@
 #include "GameFramework/Pawn.h"
 #include "GameFramework/SpringArmComponent.h"
 
+#include "NiagaraComponent.h"
+#include "NiagaraSystem.h"
+
 #include "Components/SphereComponent.h"
 
 #include "Camera/CameraComponent.h"
@@ -45,6 +48,12 @@ public:
 	/* Cámara para la bola. */
 	UPROPERTY(VisibleAnywhere, Category = "Pawn Camera")
 	UCameraComponent* CameraComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FX")
+	UNiagaraComponent* TrailFX;
+
+	UPROPERTY(EditAnywhere, Category = "FX")
+	UNiagaraSystem* TrailSystem;
 
 
 	/* FUNCIONES DEL PAWN */

@@ -41,17 +41,17 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputAction* HorizontalMoveAction;
 
-	/* Input Action de Salto. */
-	UPROPERTY(EditAnywhere, Category = "Input")
-	UInputAction* JumpAction;
-
-	/* Input Action de Sprint. */
-	UPROPERTY(EditAnywhere, Category = "Input")
-	UInputAction* SprintAction;
-
 	/* Input Action de Dash. */
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputAction* DashAction;
+
+	/* Sonido para el Dash. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
+	USoundBase* DashSound;
+
+	/* Input Action de Salto. */
+	UPROPERTY(EditAnywhere, Category = "Input")
+	UInputAction* JumpAction;
 
 	/* Referencia al jugador. */
 	ABall* Player;
@@ -78,40 +78,58 @@ protected:
 	/* Función que agrega la lógica de inserción de movimiento a la bola según el tipo de movimiento que sea. */
 	void ApplyMovementByType(const FInputActionValue& Value, FString MovementType);
 
+	/* Función para agregar movimiento de dash para la bola. */
+	void DashMovementInput();
+
+	/* Función para ejecutar el dash de la bola. */
+	void ExecuteDash();
+
 	/* Función para agregar movimiento de salto a la bola. */
 	void JumpMovementInput();
 
-	/* Función para agregar sprint a la bola si el jugador pulsa la tecla para ello. */
-	void SprintMovementInput();
-
-	/* Función para agregar movimiento de dash para la bola. */
-	void DashMovementInput();
+	/* Función para ejecutar el salto de la bola. */
+	void ExecuteJump();
 
 private:
 	/* VARIABLES */
 	/* Velocidad inicial de la Bola. */
-	float InitialSpeed = 1500.0f;
+	float InitialSpeed = 1400.0f;
 
 	/* Velocidad de movimiento de la Bola. */
 	float Speed;
 
 	/* Impulso de salto de la Bola. */
-	float JumpImpulse = 600.0f;
+	float JumpImpulse = 800.0f;
+
+	/* Delay para el salto. */
+	float JumpDelay = 1.0f;
+
+	/* Booleano para controlar el salto. */
+	bool bCanJump = true;
 
 	/* Fuerza del dash de la Bola. */
-	float DashStrength = 1000.0f;
+	float DashStrength = 800.0f;
+
+	/* Delay para el dash. */
+	float DashDelay = 1.0f;
+
+	/* Booleano para controlar el dash. */
+	bool bCanDash = true;
+
+	/* Timer Handle para el dash. */
+	FTimerHandle DashTimerHandle;
+
+	/* Timer Handle para el salto. */
+	FTimerHandle JumpTimerHandle;
 
 	/* Última dirección de movimiento de la Bola. */
 	FVector LastMovementDirection;
 
 	/* Resistencia linear de la Bola. */
-	float LinearDamping = 2.5f;
+	float LinearDamping = 3.5f;
 
 	/* Condicionante de salto de la Bola. */
 	bool bIsOnGround = true;
-
-	/* Condicionante de sprint de la Bola. */
-	bool bIsSprinting = false;
 
 public:
 	/* Función getter para obtener el Mapping Context del Controller. */

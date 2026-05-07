@@ -29,9 +29,10 @@ AMZ_Stage::AMZ_Stage()
 void AMZ_Stage::BeginPlay()
 {
 	Super::BeginPlay();
+
 	/* Al empezar el juego seteo el material elegido para el stage en sus correspondientes sitios */
-	//StageBase->SetMaterial(0, StageMaterial);
-	//StageBorders->SetMaterial(0, StageMaterial);	
+	StageBase->SetMaterial(0, StageMaterial);
+	StageBorders->SetMaterial(0, StageMaterial);	
 }
 
 void AMZ_Stage::Tick(float DeltaTime)
@@ -75,7 +76,7 @@ void AMZ_Stage::HandleScaleDecreaseProgress()
 void AMZ_Stage::UpdateScale()
 {
 	/* Sumamos 0.01 segundos al tiempo transcurrido. */
-	ElapsedTime += 0.01f;
+	ElapsedTime += GetWorld()->GetDeltaSeconds();
 
 	/* Clampeamos el valor del tiempo de animación entre el tiempo transcurrido. */
 	float Alpha = FMath::Clamp(ElapsedTime / AnimationTime, 0.0f, 1.0f);
@@ -86,10 +87,13 @@ void AMZ_Stage::UpdateScale()
 	StageBase->SetRelativeScale3D(NewScale);
 
 	/* Si el tiempo transcurrido es de más de 1 segundo limpio el timer y destruyo la plataforma. */
-	if (Alpha >= 1.0f)
+	if (Alpha >= 0.90f)
 	{
+		StageBase->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		StageBorders->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		StageCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		GetWorldTimerManager().ClearTimer(ScaleTimerHandle);
-		this->Destroy();
+		//this->Destroy();
 	}
 }
 

@@ -52,9 +52,6 @@ void ABallPlayerController::SetupInputComponent()
 		/* Vinculo la acción de movimiento de salto. */
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ABallPlayerController::JumpMovementInput);
 
-		/* Vinculo la acción de movimiento de sprint. */
-		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &ABallPlayerController::SprintMovementInput);
-
 		/* Vinculo la acción de movimiento de dash. */
 		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Started, this, &ABallPlayerController::DashMovementInput);
 	}
@@ -80,8 +77,15 @@ void ABallPlayerController::HorizontalMovementInput(const FInputActionValue& Val
 
 void ABallPlayerController::JumpMovementInput()
 {
+	if (!bCanJump)
+	{
+		return;
+	}
+
+	bCanJump = false;
+
 	/* Si el Player es válido... */
-	if (Player) 
+	if (Player)
 	{
 		/* Obtenemos la localización del Player. */
 		FVector Start = Player->GetActorLocation();
@@ -109,36 +113,58 @@ void ABallPlayerController::JumpMovementInput()
 			Player->BodyComponent->AddImpulse(Jump, NAME_None, true);
 		}
 	}
+
+	GetWorld()->GetTimerManager().SetTimer(
+		JumpTimerHandle,
+		this,
+		&ABallPlayerController::ExecuteJump,
+		JumpDelay,
+		false
+	);
 }
 
-void ABallPlayerController::SprintMovementInput()
+void ABallPlayerController::ExecuteJump()
 {
-	/* Si el Player es válido... */
-	if (Player) 
-	{
-		/* Si el jugador está esprintando, se setea la velocidad normal y su estado pasa a ser sin esprintar. Si no, al contrario. */
-		if (bIsSprinting)
-		{
-			Speed = InitialSpeed;
-			bIsSprinting = false;
-		}
-		else
-		{
-			Speed = InitialSpeed * 2.50f;
-			bIsSprinting = true;
-		}
-	}
+	bCanJump = true;
 }
 
 void ABallPlayerController::DashMovementInput()
 {
+	if (!bCanDash)
+	{
+		return;
+	}
+
+	bCanDash = false;
+
 	/* Si el player existe y la última dirección de movimiento no es cero... */
-	if (Player && !LastMovementDirection.IsNearlyZero())  
+	if (Player && !LastMovementDirection.IsNearlyZero())
 	{
 		/* Usamos Add Impulse para que sea la aplicación de fuerza sobre el mesh de la Bola instantánea. */
 		/* El parámetro "true" ignora la masa del objeto (VelChange). */
 		Player->BodyComponent->AddImpulse((LastMovementDirection * DashStrength), NAME_None, true);
+
+		if (DashSound)
+		{
+			UGameplayStatics::PlaySound2D(
+				this,
+				DashSound
+			);
+		}
 	}
+
+	GetWorld()->GetTimerManager().SetTimer(
+		DashTimerHandle,
+		this,
+		&ABallPlayerController::ExecuteDash,
+		DashDelay,
+		false
+	);
+}
+
+void ABallPlayerController::ExecuteDash()
+{
+	bCanDash = true;
 }
 
 void ABallPlayerController::ApplyMovementByType(const FInputActionValue& Value, FString MovementType)
@@ -163,6 +189,23 @@ void ABallPlayerController::ApplyMovementByType(const FInputActionValue& Value, 
 	if (!Force.IsNearlyZero()) 
 	{
 		LastMovementDirection = Force.GetSafeNormal();
+
+		if (!Player)
+		{
+			return;
+		}
+
+		if (!(Player->TrailFX->IsActive()))
+		{
+			Player->TrailFX->Activate();
+		}
+	}
+	else 
+	{
+		if (Player->TrailFX->IsActive())
+		{
+			Player->TrailFX->Deactivate();
+		}
 	}
 
 	/* Variable para detectar si la bola toca el suelo. */
@@ -192,7 +235,7 @@ void ABallPlayerController::ApplyMovementByType(const FInputActionValue& Value, 
 	if (InputValue == 0.0f)
 	{
 		/* Si no hay input, aumento el damping para frenar en seco. */
-		Player->BodyComponent->SetLinearDamping(LinearDamping * 3.0f);
+		Player->BodyComponent->SetLinearDamping(LinearDamping * 5.0f);
 	}
 	else {
 		/* Si hay input, mantengo el damping original para fluidez. */
@@ -228,3 +271,4 @@ void ABallPlayerController::ApplyMovementByType(const FInputActionValue& Value, 
 //		this->SetViewTarget(TargetCamera);
 //	}
 //}
+

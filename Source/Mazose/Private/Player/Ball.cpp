@@ -7,7 +7,7 @@
 ABall::ABall()
 {
 	// Setea para este Pawn el evento Tick para cada frame.
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	/* Creamos el static mesh de nuestro pawn y lo establecemos como root. */
 	BodyComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Component"));
@@ -24,17 +24,32 @@ ABall::ABall()
 	/* Creamos la cámara para poder ver el pawn y la jerarquizamos debajo del spring arm. */
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera Component"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
+
+	TrailFX = CreateDefaultSubobject<UNiagaraComponent>(TEXT("TrailFX"));
+	TrailFX->SetupAttachment(RootComponent);
+	TrailFX->bAutoActivate = false;
+
 }
 
 void ABall::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (TrailSystem)
+	{
+		TrailFX->SetAsset(TrailSystem);
+	}
 }
 
 
 void ABall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (BodyComponent->IsAnyRigidBodyAwake() == false)
+	{
+		BodyComponent->WakeAllRigidBodies();
+	}
 }
 
 
