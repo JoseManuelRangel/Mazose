@@ -35,37 +35,48 @@ public:
 	FVector InitialScale;
 
 	/* Vector que representa la escala final del stage la cual es 0. */
-	FVector FinalScale = FVector(0.0f, 0.0f, 0.0f);
+	FVector FinalScale;
 
-	/* Timer que controla la reducción de escala del stage. */
+	/* Timer para la reducción o incremento de escala del stage. */
 	FTimerHandle ScaleTimerHandle;
 
 	/* Tiempo que durará la animación de desescala. */
-	float AnimationTime = 1.0f;
+	float AnimationTime;
 
 	/* Tiempo que ha transcurrido del timer. */
-	float ElapsedTime = 0.0f;
+	float ElapsedTime;
+
+	/* Delay para el timer. */
+	float DelayAmount;
 
 	/* Mesh que compone la base del stage. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stage Structure")
 	UStaticMeshComponent* StageBase;
 
-	/* Material para la base del stage. */
-	UPROPERTY(EditAnywhere, Category = "Stage Materials")
-	UMaterial* StageMaterial;
-
 	/* Mesh que compone los bordes del stage. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stage Structure")
 	UStaticMeshComponent* StageBorders;
 
+	/* Material para la base del stage. */
+	UPROPERTY(EditAnywhere, Category = "Stage Materials")
+	UMaterialInterface* StageMaterial;
+
+	/* Material que saldrá una vez pisado el stage. */
+	UPROPERTY(VisibleAnywhere, Category = "Stage Materials")
+	UMaterialInterface* CollisionMaterial;
+
+	/* Material por defecto en caso de no tener asignado ningún material. */
+	UPROPERTY(VisibleAnywhere, Category = "Stage Materials")
+	UMaterialInterface* DefaultMaterial;
+
 	/* Caja de colisión que va a detectar a la bola entrar en su perímetro. */
 	UPROPERTY(EditAnywhere, Category = "Stage Structure")
 	UBoxComponent* StageCollision;
-	
-	/* Material que saldrá una vez pisado el stage. */
-	UPROPERTY(EditAnywhere, Category = "Stage Materials")
-	UMaterial* StageCollisionMaterial;
 
+	/* Componente de escena para hacer aparecer las fresas. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	class USceneComponent* StrawberryPosition;
+	
 	/* Sonido para cuando el jugador pise el stage. */
 	UPROPERTY(EditAnywhere, Category = "Stage Audio")
 	USoundBase* StageSound;
@@ -75,14 +86,20 @@ public:
 	/* Tick: Se llama a cada frame. */
 	virtual void Tick(float DeltaTime) override;
 
+	/* Función que maneja tanto la escalada como la desescalada del stage. */
+	void HandleScalingProgress(FName Situation);
+
+	/* Función que se encarga de actualizar en tiempo real la desescalada del stage. */
+	void DecreasingScale();
+
+	/* Función que se encarga de actualizar en tiempo real el incremento del stage. */
+	void IncreasingScale();
+
+	/* Función para setear los materiales en el stage. */
+	void SettingStageMaterials(UMaterialInterface* Material, FName Situation);
+
 	/* Función para activar el sonido al pisar el stage. */
 	void PlayActivatingSound();
-
-	/* Función que maneja la transición de escalas del stage. */
-	void HandleScaleDecreaseProgress();
-
-	/* Función que se encarga de actualizar en tiempo real la escala del stage. */
-	void UpdateScale();
 
 	/* Función para el inicio del overlap del stage con el Pawn. */
 	UFUNCTION()

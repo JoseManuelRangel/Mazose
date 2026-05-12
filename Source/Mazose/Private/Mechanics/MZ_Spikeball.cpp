@@ -78,7 +78,7 @@ void AMZ_Spikeball::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 
 				// Aplicamos el impulso
 				// El parámetro 'true' en bVelocityChange hace que ignore la masa (útil para que el empujón sea constante)
-				PhysComp->AddImpulse(Direccion * ImpulseStrength + FVector(0.0f, 0.0f, 1000.0f), NAME_None, true);
+				PhysComp->AddImpulse(Direccion * ImpulseStrength + FVector(0.0f, 0.0f, 500.0f), NAME_None, true);
 			}
 		}
 	}
