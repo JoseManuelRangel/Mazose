@@ -2,6 +2,9 @@
 
 
 #include "Player/BallPlayerController.h"
+
+#include "Blueprint/UserWidget.h"
+
 #include "Kismet/GameplayStatics.h"
 
 void ABallPlayerController::BeginPlay()
@@ -32,6 +35,9 @@ void ABallPlayerController::BeginPlay()
 			Speed = InitialSpeed;
 		}
 	}
+
+	/* Cuando OnPuttingHUD emita una señal, ejecuta la función PuttingHUD. */
+	OnPuttingHUD.AddDynamic(this, &ABallPlayerController::PuttingHUD);
 }
 
 void ABallPlayerController::SetupInputComponent()
@@ -244,6 +250,20 @@ void ABallPlayerController::ApplyMovementByType(const FInputActionValue& Value, 
 
 	/* Añadimos la fuerza que hemos creado anteriormente en el eje Y, que la aplique en todo el cuerpo y el cambio de aceleración en true. */
 	Player->BodyComponent->AddForce(Force, NAME_None, true);
+}
+
+void ABallPlayerController::PuttingHUD()
+{
+	/* Creo el widget de juego. */
+	CurrentLevelWidget = CreateWidget<UUserWidget>(this, LevelWidgetClass);
+
+	/* Early return en caso de no ser válido. */
+	if (!CurrentLevelWidget)
+	{
+		return;
+	}
+
+	CurrentLevelWidget->AddToViewport();
 }
 
 //void ABallPlayerController::OnPossess(APawn* InPawn)

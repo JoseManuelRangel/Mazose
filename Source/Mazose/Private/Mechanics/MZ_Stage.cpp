@@ -163,10 +163,12 @@ void AMZ_Stage::DecreasingScale()
 	/* Si el tiempo transcurrido es de más de 1 segundo limpio el timer y notifico que la plataforma está activada. */
 	if (Alpha >= 0.90f)
 	{
+		/* Le quito las colisiones a todas las partes del Stage. */
 		StageBase->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		StageBorders->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		StageCollision->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+		/* Limpio el timer. */
 		GetWorldTimerManager().ClearTimer(ScaleTimerHandle);
 	}
 }
@@ -187,25 +189,31 @@ void AMZ_Stage::IncreasingScale()
 	/* Si el tiempo transcurrido es de más de 1 segundo limpio el timer y notifico que la plataforma está activada. */
 	if (Alpha >= 1.0f)
 	{
+		/* Recupero las colisiones para todas las partes del Stage. */
 		StageBase->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		StageBorders->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		StageCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
+		/* Limpio el timer. */
 		GetWorldTimerManager().ClearTimer(ScaleTimerHandle);
 
+		/* Vuelvo a poner a false el estado "Activado" del Stage. */
 		bIsActivated = false;
 	}
 }
 
 void AMZ_Stage::SettingStageMaterials(UMaterialInterface* Material, FName Situation)
 {
+	/* Si la situación es igual a "Beginning"... */
 	if(Situation.IsEqual(FName(TEXT("Beginning"))))
-	{
+	{ 
+		/* Ponemos material tanto a la base como a los bordes. */
 		StageBase->SetMaterial(0, Material);
 		StageBorders->SetMaterial(0, Material);
 	}
 	else 
 	{
+		/* Ponemos solo material a la base. */
 		StageBase->SetMaterial(0, Material);
 	}
 }

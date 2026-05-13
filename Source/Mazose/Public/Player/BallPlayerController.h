@@ -12,6 +12,8 @@
 #include "InputActionValue.h"
 #include "EnhancedInputComponent.h"
 
+#include "Blueprint/UserWidget.h"
+
 #include "Ball.h"
 
 #include "BallPlayerController.generated.h"
@@ -19,9 +21,8 @@
 class UInputMappingContext;
 class UInputAction;
 
-/**
- * 
- */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPuttingHUDEvent);
+
 UCLASS()
 class MAZOSE_API ABallPlayerController : public APlayerController
 {
@@ -34,6 +35,13 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputMappingContext* DefaultMappingContext;
 
+	/* Variable que permite elegir el Blueprint "WB_Level_HUD" en el editor. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	TSubclassOf<UUserWidget> LevelWidgetClass;
+
+	UPROPERTY()
+	UUserWidget* CurrentLevelWidget;
+
 	/* Input Action de Movimiento. */
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputAction* VerticalMoveAction;
@@ -45,13 +53,15 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputAction* DashAction;
 
+	/* Input Action de Salto. */
+	UPROPERTY(EditAnywhere, Category = "Input")
+	UInputAction* JumpAction;
+
 	/* Sonido para el Dash. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
 	USoundBase* DashSound;
 
-	/* Input Action de Salto. */
-	UPROPERTY(EditAnywhere, Category = "Input")
-	UInputAction* JumpAction;
+
 
 	/* Referencia al jugador. */
 	ABall* Player;
@@ -65,6 +75,10 @@ protected:
 	* virtual void OnPossess(APawn* InPawn) override;
 	* void SetupSceneCamera();
 	*/
+
+	/* Función para poder poner el HUD. */
+	UFUNCTION()
+	void PuttingHUD();
 	
 	/* Función para vincular las acciones al context. */
 	virtual void SetupInputComponent() override;
@@ -132,6 +146,10 @@ private:
 	bool bIsOnGround = true;
 
 public:
+	/* Event Dispatcher para poner el HUD de juego. */
+	UPROPERTY(BlueprintAssignable, Category = "UI Events")
+	FOnPuttingHUDEvent OnPuttingHUD;
+
 	/* Función getter para obtener el Mapping Context del Controller. */
 	UInputMappingContext* GetMappingContext() const { return DefaultMappingContext; };
 };
