@@ -39,9 +39,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<UUserWidget> LevelWidgetClass;
 
-	UPROPERTY()
-	UUserWidget* CurrentLevelWidget;
-
 	/* Input Action de Movimiento. */
 	UPROPERTY(EditAnywhere, Category = "Input")
 	UInputAction* VerticalMoveAction;
@@ -60,8 +57,6 @@ protected:
 	/* Sonido para el Dash. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
 	USoundBase* DashSound;
-
-
 
 	/* Referencia al jugador. */
 	ABall* Player;
@@ -149,6 +144,12 @@ public:
 	/* Event Dispatcher para poner el HUD de juego. */
 	UPROPERTY(BlueprintAssignable, Category = "UI Events")
 	FOnPuttingHUDEvent OnPuttingHUD;
+
+	UPROPERTY()
+	UUserWidget* CurrentLevelWidget;
+
+	/* Booleano para comprobar si está pausado. */
+	bool bIsPaused = false;
 
 	/* Función getter para obtener el Mapping Context del Controller. */
 	UInputMappingContext* GetMappingContext() const { return DefaultMappingContext; };

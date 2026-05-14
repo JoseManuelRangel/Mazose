@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// José Manuel Rangel Muñoz. Copyright © Todos los derechos reservados (Excepto algunos assets).
 
 #pragma once
 
@@ -7,6 +7,8 @@
 #include "Blueprint/UserWidget.h"
 
 #include "Components/TextBlock.h"
+
+#include "Player/BallPlayerController.h"
 
 #include "MZ_LevelWidget.generated.h"
 
@@ -23,8 +25,15 @@ protected:
 	/* Evento equivalente a Event Construct. */
 	virtual void NativeConstruct() override;
 
+	/* Evento tick del widget. */
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
 protected:
 	/* Variables de la clase. */
+	/* Referencia al Player Controller. */
+	UPROPERTY()
+	ABallPlayerController* Controller;
+
 	/* Textblock de las fresas. */
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* Txt_Strawberries;
@@ -49,18 +58,6 @@ protected:
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
 	UWidgetAnimation* Fade;
 
-	/* Event Dispatcher para añadir fresas al textbox. */
-	UPROPERTY(BlueprintAssignable, Category = "UI Events")
-	FOnAddingStrawberries OnAddingStrawberries;
-
-	/* Event Dispatcher para actualizar la posición del indicador de altura. */
-	UPROPERTY(BlueprintAssignable, Category = "UI Events")
-	FOnUpdateBallIndicatorPosition OnUpdateBallIndicatorPosition;
-
-	/* Event Dispatcher para actualizar el estado del personaje. */
-	UPROPERTY(BlueprintAssignable, Category = "UI Events")
-	FOnSettingIsAliveToFalse OnSettingIsAliveToFalse;
-
 	/* Variable que permite elegir el Blueprint "WB_Score_HUD" en el editor. */
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TSubclassOf<UUserWidget> ScoreWidgetClass;
@@ -70,7 +67,7 @@ protected:
 	UUserWidget* CurrentScoreWidget;
 
 	/* Tiempo que ha transcurrido en la partida. */
-	float Time;
+	float Time = 0.0f;
 
 	/* Contador de fresas de la partida. */
 	int32 StrawberriesCount = 0;
@@ -87,7 +84,23 @@ protected:
 	/* Texto de inicialización del formato del tiempo. */
 	FText InitialTime;
 
+	/* Timer para un pequeño delay. */
+	FTimerHandle ScoreDelayTimerHandle;
+
 public:
+	/* Variables de la clase. */
+	/* Event Dispatcher para añadir fresas al textbox. */
+	UPROPERTY(BlueprintAssignable, Category = "UI Events")
+	FOnAddingStrawberries OnAddingStrawberries;
+
+	/* Event Dispatcher para actualizar la posición del indicador de altura. */
+	UPROPERTY(BlueprintAssignable, Category = "UI Events")
+	FOnUpdateBallIndicatorPosition OnUpdateBallIndicatorPosition;
+
+	/* Event Dispatcher para actualizar el estado del personaje. */
+	UPROPERTY(BlueprintAssignable, Category = "UI Events")
+	FOnSettingIsAliveToFalse OnSettingIsAliveToFalse;
+
 	/* Funciones de la clase. */
 	/* Función para poder actualizar las fresas en el textbox. */
 	UFUNCTION()
@@ -100,4 +113,10 @@ public:
 	/* Función para poder actualizar el estado del pawn en partida. */
 	UFUNCTION()
 	void SettingAliveToFalse();
+
+	/* Función para el Timer. */
+	void ActiveTimer();
+
+	/* Función para mostrar el widget de la puntuación. */
+	void ShowScoreHUD();
 };

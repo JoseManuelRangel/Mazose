@@ -17,7 +17,7 @@ class MAZOSE_API AMZ_Platform : public AActor
 	GENERATED_BODY()
 	
 public:	
-	/* Constructor */
+	/* Constructor. */
 	AMZ_Platform();
 
 protected:

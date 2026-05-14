@@ -1,10 +1,12 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// José Manuel Rangel Muñoz. Copyright © Todos los derechos reservados (Excepto algunos assets).
 
 
 
 #include "Widgets/MZ_LevelWidget.h"
 
 #include "Blueprint/UserWidget.h"
+
+#include "Player/BallPlayerController.h"
 
 #include "Kismet/GameplayStatics.h"
 
@@ -21,6 +23,54 @@ void UMZ_LevelWidget::NativeConstruct()
 
 	/* Cuando OnSettingIsAliveToFalse emita una señal, ejecuta la función SettingAliveToFalse. */
 	OnSettingIsAliveToFalse.AddDynamic(this, &UMZ_LevelWidget::SettingAliveToFalse);
+
+	/* Le hacemos un casteo al Player Controller base. */
+	Controller = Cast<ABallPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+}
+
+void UMZ_LevelWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+
+	/* Obtener el controlador si no lo tengo. */
+	if(!Controller)
+	{
+		return;
+	}
+
+	/* Si es válido... */
+	if (Controller)
+	{
+		/* Si está pausado el controlador... */
+		if (!Controller->bIsPaused)
+		{
+			/* Si el jugador está vivo... */
+			if (bPlayerIsAlive)
+			{
+				ActiveTimer();
+			}
+			else 
+			{
+				/* Evitamos que esto se ejecute en bucle cada frame del Tick. */
+				if (!GetWorld()->GetTimerManager().IsTimerActive(ScoreDelayTimerHandle))
+				{
+					/* Seteamos el record del jugador. */
+					FTimespan Timespan = FTimespan::FromSeconds(Time);
+					PlayerRecord = FText::FromString(FString::Printf(TEXT("%02d:%02d"),
+						Timespan.GetMinutes(), Timespan.GetSeconds()));
+
+					/* Metemos el record en el textbox. */
+					if (Txt_Record_Time)
+					{
+						Txt_Record_Time->SetText(PlayerRecord);
+					}
+
+					/* Tras un delay de 2.0s creamos el widget. */
+					GetWorld()->GetTimerManager().SetTimer(ScoreDelayTimerHandle, this, &UMZ_LevelWidget::ShowScoreHUD, 2.0f, false);
+				}
+			}
+		}
+	}
 }
 
 void UMZ_LevelWidget::AddingStrawberrries()
@@ -88,4 +138,48 @@ void UMZ_LevelWidget::SettingAliveToFalse()
 
 	/* Quito la interfaz del nivel. */
 	this->RemoveFromParent();
+}
+
+void UMZ_LevelWidget::ActiveTimer()
+{
+	/* Calculo el tiempo sumando la cantidad actual + los delta seconds para independizar al tick de los FPS. */
+	Time += UGameplayStatics::GetWorldDeltaSeconds(GetWorld());
+
+	/* Early return del textblock del */
+	if (!Txt_Time)
+	{
+		return;
+	}
+
+	/* Transformo el tiempo de segundos a formato 00:00:00 y lo pego al textblock usando FTimespan para el formato de tiempo. */
+	FTimespan Timespan = FTimespan::FromSeconds(Time);
+
+	/* Formateo como MM:SS o similar. */
+	FString TimeString = FString::Printf(TEXT("%02d:%02d"),
+		Timespan.GetMinutes(),
+		Timespan.GetSeconds());
+
+	/* Seteo el texto en el textbox. */
+	Txt_Time->SetText(FText::FromString(TimeString));
+}
+
+void UMZ_LevelWidget::ShowScoreHUD()
+{
+	/* Early return para comprobar la clase. */
+	if (!ScoreWidgetClass)
+	{
+		return;
+	}
+
+	/* Creación del widget de puntuación. */
+	UUserWidget* ScoreWidget = CreateWidget<UUserWidget>(GetOwningPlayer(), ScoreWidgetClass);
+
+	/* Early return para comprobar el widget. */
+	if (!ScoreWidget)
+	{
+		return;
+	}
+
+	/* Lo añado al viewport. */
+	ScoreWidget->AddToViewport();
 }
