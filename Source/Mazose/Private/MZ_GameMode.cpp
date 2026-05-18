@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// José Manuel Rangel Muñoz. Copyright © Todos los derechos reservados (Excepto algunos assets).
 
 
 #include "MZ_GameMode.h"
@@ -21,12 +21,6 @@ AMZ_GameMode::AMZ_GameMode()
 void AMZ_GameMode::BeginPlay()
 {
 	Super::BeginPlay();
-
-	/* Cuando OnPlaySound emita una señal, ejecuta la función PlayingMusic. */
-	OnPlaySound.AddDynamic(this, &AMZ_GameMode::PlayingMusic);
-
-	/* Cuando OnStopSound emita una señal, ejecuta la función QuittingMusic. */
-	OnStopSound.AddDynamic(this, &AMZ_GameMode::QuittingMusic);
 
 	/* Llamo al evento que dispara la cuenta atrás con el user widget específico. */
 	SettingCountdownOnPlayableLevels();
@@ -101,27 +95,9 @@ void AMZ_GameMode::CountdownSet()
 
 void AMZ_GameMode::DestroyingRespawnPlatform()
 {
-	/* Early return para comprobar que se ha asignado la clase correctamente. */
-	if (!RespawnPlatformClass)
+	if (IsValid(TargetPlatformInstance))
 	{
-		return;
-	}
-
-	/* Cojo todos los actores de esa clase y los vuelco en el array. */
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), RespawnPlatformClass, FoundActors);
-
-	/* Si la longitud de ese array es de 1... */
-	if (FoundActors.Num() == 1)
-	{
-		/* Cojo el primer y único actor del array. */
-		AActor* TargetPlatform = FoundActors[0];
-
-		/* Compruebo su validez... */
-		if (IsValid(TargetPlatform))
-		{
-			TargetPlatform->Destroy();
-		}
+		TargetPlatformInstance->Destroy();
 	}
 
 	/* Obtener el player controller. */
@@ -137,7 +113,16 @@ void AMZ_GameMode::DestroyingRespawnPlatform()
 	}
 
 	/* Me suscribo al evento y lo llamo para ejecutarlo. */
-	Controller->OnPuttingHUD.Broadcast();
+	Controller->PuttingHUD();
+
+	/* Le doy al play a la música de fondo del nivel. */
+	PlayingMusic();
+}
+
+void AMZ_GameMode::RegisterSpawnPlatform(AActor* Platform)
+{
+	/* Registro la plataforma en el Game Mode. */
+	TargetPlatformInstance = Platform;
 }
 
 

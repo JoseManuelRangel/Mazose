@@ -21,8 +21,6 @@
 class UInputMappingContext;
 class UInputAction;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPuttingHUDEvent);
-
 UCLASS()
 class MAZOSE_API ABallPlayerController : public APlayerController
 {
@@ -70,10 +68,6 @@ protected:
 	* virtual void OnPossess(APawn* InPawn) override;
 	* void SetupSceneCamera();
 	*/
-
-	/* Función para poder poner el HUD. */
-	UFUNCTION()
-	void PuttingHUD();
 	
 	/* Función para vincular las acciones al context. */
 	virtual void SetupInputComponent() override;
@@ -141,15 +135,15 @@ private:
 	bool bIsOnGround = true;
 
 public:
-	/* Event Dispatcher para poner el HUD de juego. */
-	UPROPERTY(BlueprintAssignable, Category = "UI Events")
-	FOnPuttingHUDEvent OnPuttingHUD;
-
 	UPROPERTY()
 	UUserWidget* CurrentLevelWidget;
 
 	/* Booleano para comprobar si está pausado. */
 	bool bIsPaused = false;
+
+	/* Función para poder poner el HUD. */
+	UFUNCTION()
+	void PuttingHUD();
 
 	/* Función getter para obtener el Mapping Context del Controller. */
 	UInputMappingContext* GetMappingContext() const { return DefaultMappingContext; };

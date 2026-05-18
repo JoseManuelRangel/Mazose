@@ -35,9 +35,6 @@ void ABallPlayerController::BeginPlay()
 			Speed = InitialSpeed;
 		}
 	}
-
-	/* Cuando OnPuttingHUD emita una señal, ejecuta la función PuttingHUD. */
-	OnPuttingHUD.AddDynamic(this, &ABallPlayerController::PuttingHUD);
 }
 
 void ABallPlayerController::SetupInputComponent()
@@ -263,6 +260,7 @@ void ABallPlayerController::PuttingHUD()
 		return;
 	}
 
+	/* Se coloca en el Viewport. */
 	CurrentLevelWidget->AddToViewport();
 }
 

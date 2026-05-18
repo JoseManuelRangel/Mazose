@@ -15,17 +15,11 @@ void UMZ_LevelWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	/* Cuando OnAddingStrawberries emita una señal, ejecuta la función AddingStrawberries. */
-	OnAddingStrawberries.AddDynamic(this, &UMZ_LevelWidget::AddingStrawberrries);
-
-	/* Cuando OnUpdateBallIndicatorPosition emita una señal, ejecuta la función UpdatingBallIndicatorPosition. */
-	OnUpdateBallIndicatorPosition.AddDynamic(this, &UMZ_LevelWidget::UpdatingBallIndicatorPosition);
-
-	/* Cuando OnSettingIsAliveToFalse emita una señal, ejecuta la función SettingAliveToFalse. */
-	OnSettingIsAliveToFalse.AddDynamic(this, &UMZ_LevelWidget::SettingAliveToFalse);
-
 	/* Le hacemos un casteo al Player Controller base. */
 	Controller = Cast<ABallPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+	/* Inicializo el número de fresas. */
+	Txt_Strawberries->SetText(FText::FromString(FString::Printf(TEXT("0"))));
 }
 
 void UMZ_LevelWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -41,8 +35,8 @@ void UMZ_LevelWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	/* Si es válido... */
 	if (Controller)
 	{
-		/* Si está pausado el controlador... */
-		if (!Controller->bIsPaused)
+		/* Si no está pausado el controlador... */
+		if (!(Controller->bIsPaused))
 		{
 			/* Si el jugador está vivo... */
 			if (bPlayerIsAlive)
@@ -104,6 +98,15 @@ void UMZ_LevelWidget::UpdatingBallIndicatorPosition()
 		/* Notifico que el jugador está debajo del primer nivel. */
 		bPlayerIsLower = true;
 	}
+
+	/* Early return para comprobar la validez de la animación. */
+	if (!BallArrowIndicator)
+	{
+		return;
+	}
+
+	/* Ejecución de la animación. */
+	PlayAnimation(BallArrowIndicator, 0.0f, 1, EUMGSequencePlayMode::Forward, 1.0f);
 }
 
 void UMZ_LevelWidget::SettingAliveToFalse()
@@ -145,6 +148,9 @@ void UMZ_LevelWidget::ActiveTimer()
 	/* Calculo el tiempo sumando la cantidad actual + los delta seconds para independizar al tick de los FPS. */
 	Time += UGameplayStatics::GetWorldDeltaSeconds(GetWorld());
 
+	/* Obtenemos los segundos del tiempo. */
+	int32 Seconds = FMath::FloorToInt(Time);
+
 	/* Early return del textblock del */
 	if (!Txt_Time)
 	{
@@ -154,10 +160,17 @@ void UMZ_LevelWidget::ActiveTimer()
 	/* Transformo el tiempo de segundos a formato 00:00:00 y lo pego al textblock usando FTimespan para el formato de tiempo. */
 	FTimespan Timespan = FTimespan::FromSeconds(Time);
 
+	/* Conseguimos la parte decimal. */
+	float ParteDecimal = Time - Seconds;
+
+	/* Obtenemos los MilliSeconds. */
+	int32 MilliSeconds = FMath::FloorToInt(ParteDecimal * 100.0f);
+
 	/* Formateo como MM:SS o similar. */
-	FString TimeString = FString::Printf(TEXT("%02d:%02d"),
+	FString TimeString = FString::Printf(TEXT("%02d:%02d:%02d"),
 		Timespan.GetMinutes(),
-		Timespan.GetSeconds());
+		Timespan.GetSeconds(),
+		MilliSeconds);
 
 	/* Seteo el texto en el textbox. */
 	Txt_Time->SetText(FText::FromString(TimeString));

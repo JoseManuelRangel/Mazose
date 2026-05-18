@@ -51,7 +51,7 @@ void AMZ_Deadzone::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 			return;
 		}
 
-		Widget->OnSettingIsAliveToFalse.Broadcast();
+		Widget->SettingAliveToFalse();
 
 		AGameModeBase* GM = UGameplayStatics::GetGameMode(GetWorld());
 
@@ -67,7 +67,7 @@ void AMZ_Deadzone::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 			return;
 		}
 
-		GameMode->OnStopSound.Broadcast();
+		GameMode->QuittingMusic();
 	}
 }
 

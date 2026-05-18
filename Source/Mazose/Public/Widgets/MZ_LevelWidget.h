@@ -12,9 +12,6 @@
 
 #include "MZ_LevelWidget.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAddingStrawberries);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnUpdateBallIndicatorPosition);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSettingIsAliveToFalse);
 
 UCLASS()
 class MAZOSE_API UMZ_LevelWidget : public UUserWidget
@@ -89,18 +86,6 @@ protected:
 
 public:
 	/* Variables de la clase. */
-	/* Event Dispatcher para añadir fresas al textbox. */
-	UPROPERTY(BlueprintAssignable, Category = "UI Events")
-	FOnAddingStrawberries OnAddingStrawberries;
-
-	/* Event Dispatcher para actualizar la posición del indicador de altura. */
-	UPROPERTY(BlueprintAssignable, Category = "UI Events")
-	FOnUpdateBallIndicatorPosition OnUpdateBallIndicatorPosition;
-
-	/* Event Dispatcher para actualizar el estado del personaje. */
-	UPROPERTY(BlueprintAssignable, Category = "UI Events")
-	FOnSettingIsAliveToFalse OnSettingIsAliveToFalse;
-
 	/* Funciones de la clase. */
 	/* Función para poder actualizar las fresas en el textbox. */
 	UFUNCTION()

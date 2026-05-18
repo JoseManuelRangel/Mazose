@@ -8,6 +8,23 @@
 #include "Kismet/GameplayStatics.h"
 
 
+void UMZ_CountdownWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	if (!SecondsAnimation)
+	{
+		return;
+	}
+
+	/* Vinculo la función al delegado de finalización. */
+	AnimationFinishedDelegate.BindDynamic(this, &UMZ_CountdownWidget::HandleAnimationFinished);
+	BindToAnimationFinished(SecondsAnimation, AnimationFinishedDelegate);
+
+	/* Ejecutamos la animación. */
+	PlayAnimation(SecondsAnimation, 0.0f, 1, EUMGSequencePlayMode::Forward, 1.0f);
+}
+
 void UMZ_CountdownWidget::OnCountdownAnimationFinished()
 {
 	/* Obtengo el Game Mode. */
@@ -33,4 +50,10 @@ void UMZ_CountdownWidget::OnCountdownAnimationFinished()
 
 	/* Elimino este widget. */
 	this->RemoveFromParent();
+}
+
+void UMZ_CountdownWidget::HandleAnimationFinished()
+{
+	/* Llamo a la función que se encarga de destruir la plataforma y crear el widget del nivel. */
+	OnCountdownAnimationFinished();
 }

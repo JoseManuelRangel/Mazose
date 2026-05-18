@@ -75,7 +75,7 @@ void AMZ_Strawberry::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor*
 			}
 
 			/* Si el casteo es válido hacemos el broadcast del event dispatcher. */
-			W->OnAddingStrawberries.Broadcast();
+			W->AddingStrawberrries();
 
 			/* Ejecutamos la timeline. */
 			DisappearingTimeline->PlayFromStart();

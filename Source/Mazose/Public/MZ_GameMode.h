@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// José Manuel Rangel Muñoz. Copyright © Todos los derechos reservados (Excepto algunos assets).
 
 #pragma once
 
@@ -10,8 +10,6 @@
 
 #include "MZ_GameMode.generated.h"
 
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSoundEvent);
 
 UCLASS()
 class MAZOSE_API AMZ_GameMode : public AGameModeBase
@@ -36,21 +34,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game Setup")
 	TSubclassOf<AActor> RespawnPlatformClass;
 
+	UPROPERTY()
+	AActor* TargetPlatformInstance;
+
 	/* Widget de la cuenta atrás para empezar a jugar. */
 	UPROPERTY()
 	UUserWidget* CurrentCountdownWidget;
 
 	/* Audio para poder reproducir en los niveles. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game Audio")
-	class UAudioComponent* LevelMusic;
-
-	/* Event Dispatcher para darle al play a la música. */
-	UPROPERTY(BlueprintAssignable, Category = "Audio Events")
-	FOnSoundEvent OnPlaySound;
-
-	/* Event Dispatcher para darle stop a la música. */
-	UPROPERTY(BlueprintAssignable, Category = "Audio Events")
-	FOnSoundEvent OnStopSound;
+	UAudioComponent* LevelMusic;
 
 public:
 	/* Funciones de la clase. */
@@ -72,4 +65,7 @@ public:
 	/* Función para destruir la plataforma de respawn. */
 	UFUNCTION(BlueprintCallable, Category = "Game Events")
 	void DestroyingRespawnPlatform();
+
+	/* Función que hace que se guarde la plataforma al aparecer. */
+	void RegisterSpawnPlatform(AActor* Platform);
 };

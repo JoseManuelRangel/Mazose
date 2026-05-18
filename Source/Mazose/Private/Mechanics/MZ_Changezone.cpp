@@ -53,7 +53,7 @@ void AMZ_Changezone::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor*
 			}
 
 			/* Si el casteo es válido hacemos el broadcast del event dispatcher. */
-			W->OnUpdateBallIndicatorPosition.Broadcast();
+			W->UpdatingBallIndicatorPosition();
 		}
 	}
 }
