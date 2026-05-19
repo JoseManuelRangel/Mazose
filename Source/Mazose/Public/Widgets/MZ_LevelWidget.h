@@ -35,6 +35,10 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* Txt_Strawberries;
 
+	/* Textblock de las monedas. */
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Txt_Coins;
+
 	/* Textblock del tiempo. */
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* Txt_Time;
@@ -55,6 +59,14 @@ protected:
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
 	UWidgetAnimation* Fade;
 
+	/* Animación que hace un loop continuo de escala y rotación para las fresas. */
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
+	UWidgetAnimation* Strawberries;
+
+	/* Animación que hace un loop continuo de escala y rotación para las monedas. */
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
+	UWidgetAnimation* Coins;
+
 	/* Variable que permite elegir el Blueprint "WB_Score_HUD" en el editor. */
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TSubclassOf<UUserWidget> ScoreWidgetClass;
@@ -68,6 +80,9 @@ protected:
 
 	/* Contador de fresas de la partida. */
 	int32 StrawberriesCount = 0;
+
+	/* Contador de monedas de la partida. */
+	int32 CoinsCount = 0;
 
 	/* Booleano que controla si el jugador está un piso por debajo o no. */
 	bool bPlayerIsLower = false;
@@ -90,6 +105,9 @@ public:
 	/* Función para poder actualizar las fresas en el textbox. */
 	UFUNCTION()
 	void AddingStrawberrries();
+
+	UFUNCTION()
+	void AddingCoins();
 
 	/* Función para poder actualizar la posición de la bola en el indicador. */
 	UFUNCTION()

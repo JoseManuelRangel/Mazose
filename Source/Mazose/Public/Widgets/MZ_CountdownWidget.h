@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// José Manuel Rangel Muñoz. Copyright © Todos los derechos reservados (Excepto algunos assets).
 
 #pragma once
 
@@ -15,6 +15,7 @@ class MAZOSE_API UMZ_CountdownWidget : public UUserWidget
 	GENERATED_BODY()
 
 protected:
+	/* Evento de construcción inicial del widget. */
 	virtual void NativeConstruct() override;
 
 protected:

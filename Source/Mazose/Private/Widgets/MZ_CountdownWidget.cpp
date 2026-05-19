@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// José Manuel Rangel Muñoz. Copyright © Todos los derechos reservados (Excepto algunos assets).
 
 
 #include "Widgets/MZ_CountdownWidget.h"

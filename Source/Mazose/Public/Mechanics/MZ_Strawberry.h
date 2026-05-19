@@ -55,10 +55,6 @@ protected:
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-public:	
-	/* Tick: Se llama a cada frame. */
-	virtual void Tick(float DeltaTime) override;
-
 private:
 	/* Booleano que controla si la fresa está colectada o no. */
 	bool bWasCollected = false;

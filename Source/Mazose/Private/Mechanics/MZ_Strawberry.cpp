@@ -98,9 +98,3 @@ void AMZ_Strawberry::TimelineFinished()
 	Destroy();
 }
 
-
-void AMZ_Strawberry::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-

@@ -20,6 +20,15 @@ void UMZ_LevelWidget::NativeConstruct()
 
 	/* Inicializo el número de fresas. */
 	Txt_Strawberries->SetText(FText::FromString(FString::Printf(TEXT("0"))));
+
+	/* Inicializo el número de monedas. */
+	Txt_Coins->SetText(FText::FromString(FString::Printf(TEXT("0"))));
+
+	/* Ejecución de la animación. */
+	PlayAnimation(Strawberries, 0.0f, 0, EUMGSequencePlayMode::Forward, 0.5f);
+
+	/* Ejecución de la animación. */
+	PlayAnimation(Coins, 0.0f, 0, EUMGSequencePlayMode::Forward, 0.5f);
 }
 
 void UMZ_LevelWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -80,6 +89,21 @@ void UMZ_LevelWidget::AddingStrawberrries()
 
 	/* Seteo la cantidad en el textbox. */
 	Txt_Strawberries->SetText(FText::AsNumber(StrawberriesCount));
+}
+
+void UMZ_LevelWidget::AddingCoins()
+{
+	/* Incremento el contador de monedas 1 más. */
+	CoinsCount++;
+
+	/* Early return para comprobar validez del textbox. */
+	if (!Txt_Coins)
+	{
+		return;
+	}
+
+	/* Seteo la cantidad en el textbox. */
+	Txt_Coins->SetText(FText::AsNumber(CoinsCount));
 }
 
 void UMZ_LevelWidget::UpdatingBallIndicatorPosition()
